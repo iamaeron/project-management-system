@@ -1,3 +1,11 @@
 :root {
   --mantine-font-family: "Bricolage Grotesque", sans-serif !important;
 }
+
+.mantine-NavLink-root:hover {
+  background-color: #3b3bc2;
+}
+
+.mantine-Modal-title {
+  font-weight: 600 !important;
+}

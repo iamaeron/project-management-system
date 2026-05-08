@@ -1,0 +1,157 @@
+import {
+  ActionIcon,
+  Anchor,
+  AppShell,
+  Breadcrumbs,
+  Container,
+  Flex,
+  Paper,
+  Pill,
+  ScrollArea,
+  Stack,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import {
+  AltArrowRight,
+  Bill,
+  CaseRound,
+  HomeSmile,
+  Inbox,
+  NotesMinimalistic,
+  Sidebar,
+} from "@solar-icons/react";
+import { useDisclosure } from "@mantine/hooks";
+import SidebarLink from "@/components/sidebar/SidebarLink";
+import { authClient } from "@/lib/auth-client";
+import { useLocation } from "react-router";
+import UserAvatar from "@/components/user/UserAvatar";
+
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+const AppLayout = ({ children }: AppLayoutProps) => {
+  const user = authClient.useSession();
+  const pathname = useLocation().pathname;
+  const [opened, { toggle }] = useDisclosure();
+
+  const items = pathname
+    .split("/")
+    .slice(1)
+    .map((item, i) => {
+      return (
+        <Anchor size="sm" href={item} key={i}>
+          <span style={{ textTransform: "capitalize" }}>{item}</span>
+        </Anchor>
+      );
+    });
+
+  return (
+    <AppShell
+      navbar={{ width: 260, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      padding="md"
+    >
+      <AppShell.Navbar bg="#f4f4f5" withBorder={false}>
+        <AppShell.Section p="md" pr="0" pt="xl" pl="lg">
+          <Flex align="center" justify="space-between">
+            <Flex align="center">
+              <Text size="xl" fw="bold">
+                PMS
+              </Text>
+
+              <div
+                style={{
+                  borderRight: "1px solid #d4d4d8",
+                  height: 10,
+                  margin: "0 4px 0 14px",
+                }}
+              ></div>
+
+              <Pill>Creator</Pill>
+            </Flex>
+            <Tooltip
+              label="Toggle sidebar"
+              style={{ fontSize: "13px" }}
+              position="bottom"
+              openDelay={500}
+            >
+              <ActionIcon variant="subtle" color="#a1a1aa" onClick={toggle}>
+                <Sidebar size={22} color="#3f3f46" />
+              </ActionIcon>
+            </Tooltip>
+          </Flex>
+        </AppShell.Section>
+        <AppShell.Section pl="md" pe="0">
+          <Flex
+            align="center"
+            gap="sm"
+            p="xs"
+            pt="md"
+            style={{ borderTop: "1px solid #e4e4e7" }}
+          >
+            <UserAvatar />
+            <div>
+              <Text size="sm" style={{ fontWeight: "500" }}>
+                {user.data?.user.name}
+              </Text>
+            </div>
+          </Flex>
+        </AppShell.Section>
+        <AppShell.Section grow component={ScrollArea} px="md" pr="0">
+          <Stack gap="6px">
+            <SidebarLink
+              to="/creator/dashboard"
+              icon={HomeSmile}
+              label="Dashboard"
+            />
+
+            <SidebarLink
+              to="/creator/clients"
+              icon={CaseRound}
+              label="Clients"
+            />
+
+            <SidebarLink
+              to="/creator/projects"
+              icon={NotesMinimalistic}
+              label="Projects"
+            />
+
+            <SidebarLink to="/creator/invoices" icon={Bill} label="Invoices" />
+          </Stack>
+        </AppShell.Section>
+        <AppShell.Section p="md" pr="0">
+          <Paper mih={250} p="sm" shadow="lg">
+            <Flex align="center" mb={8} gap={8} px={4}>
+              <Inbox size={18} />
+              <Text size="sm" fw={600}>
+                Inbox
+              </Text>
+            </Flex>
+            Notif
+          </Paper>
+        </AppShell.Section>
+      </AppShell.Navbar>
+      <AppShell.Main style={{ display: "flex" }} bg="#f4f4f5">
+        <Paper radius={8} bg="white" shadow="xl" display="flex" w="100%">
+          <Container fluid style={{ flex: "1" }} p="lg">
+            <AppShell.Section mb={20}>
+              <Flex align="center" justify="space-between">
+                <Breadcrumbs separator={<AltArrowRight size={14} />}>
+                  {items}
+                </Breadcrumbs>
+
+                <UserAvatar />
+              </Flex>
+            </AppShell.Section>
+
+            {children}
+          </Container>
+        </Paper>
+      </AppShell.Main>
+    </AppShell>
+  );
+};
+
+export default AppLayout;

@@ -12,7 +12,7 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  role: text("role").$type<"client" | "creator">().default("creator").notNull(),
+  role: text("role").default("client").notNull(),
 });
 
 export const session = pgTable(
@@ -74,9 +74,31 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const client = pgTable("client", {
+  id: text("id").primaryKey(),
+  email: text("email"),
+  name: text("name"),
+  creatorId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const clientRelations = relations(client, ({ one }) => ({
+  user: one(user, {
+    fields: [client.creatorId],
+    references: [user.id],
+  }),
+}));
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  clients: many(client),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

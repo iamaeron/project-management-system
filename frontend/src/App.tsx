@@ -4,11 +4,17 @@ import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import AppRoutes from "./routes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// Create a client
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <MantineProvider>
-      <AppRoutes />
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={{ primaryColor: "dark" }}>
+        <AppRoutes />
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
