@@ -4,6 +4,7 @@ import CreatorDashboard from "./creator/dashboard";
 import CreatorClientsPage from "./creator/clients";
 import CreatorProjects from "./creator/projects";
 import CreatorInvoices from "./creator/invoices";
+import CreatorProjectPage from "./creator/project";
 
 const AppRoutes = () => {
   return (
@@ -14,8 +15,10 @@ const AppRoutes = () => {
       <Route path="creator">
         <Route path="dashboard" element={<CreatorDashboard />} />
         <Route path="clients" element={<CreatorClientsPage />} />
-        <Route path="projects" element={<CreatorProjects />} />
         <Route path="invoices" element={<CreatorInvoices />} />
+        {/* projects */}
+        <Route path="projects" element={<CreatorProjects />} />
+        <Route path="projects/:projectId" element={<CreatorProjectPage />} />
       </Route>
     </Routes>
   );

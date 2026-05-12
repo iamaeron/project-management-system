@@ -1,8 +1,7 @@
 import ClientModal from "@/components/modals/ClientModal";
+import { useFetchClients } from "@/hooks/useFetchClients";
 import AppLayout from "@/layouts/creator/AppLayout";
-import { getData } from "@/lib/fetcher";
 import { Button, Center, Flex, Paper, Table, Text } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
 import { Copy, Eye } from "lucide-react";
 
 interface ClientData {
@@ -12,14 +11,7 @@ interface ClientData {
 }
 
 const CreatorClientsPage = () => {
-  const { data, isFetching } = useQuery({
-    queryKey: ["clients"],
-    queryFn: async () => {
-      const res = await getData("/clients");
-      console.log(res);
-      return res.data;
-    },
-  });
+  const { data, isFetching } = useFetchClients();
 
   if (isFetching) {
     return (

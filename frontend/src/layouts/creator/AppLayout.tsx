@@ -26,26 +26,17 @@ import SidebarLink from "@/components/sidebar/SidebarLink";
 import { authClient } from "@/lib/auth-client";
 import { useLocation } from "react-router";
 import UserAvatar from "@/components/user/UserAvatar";
+import AppBreadcrumbs from "@/components/app/AppBreadcrumbs";
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  customLastCrumb?: string;
 }
 
-const AppLayout = ({ children }: AppLayoutProps) => {
+const AppLayout = ({ children, customLastCrumb }: AppLayoutProps) => {
   const user = authClient.useSession();
   const pathname = useLocation().pathname;
   const [opened, { toggle }] = useDisclosure();
-
-  const items = pathname
-    .split("/")
-    .slice(1)
-    .map((item, i) => {
-      return (
-        <Anchor size="sm" href={item} key={i}>
-          <span style={{ textTransform: "capitalize" }}>{item}</span>
-        </Anchor>
-      );
-    });
 
   return (
     <AppShell
@@ -122,32 +113,50 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           </Stack>
         </AppShell.Section>
         <AppShell.Section p="md" pr="0">
-          <Paper mih={250} p="sm" shadow="lg">
+          <Paper mih={250} p="sm" shadow="sm">
             <Flex align="center" mb={8} gap={8} px={4}>
               <Inbox size={18} />
               <Text size="sm" fw={600}>
                 Inbox
               </Text>
             </Flex>
-            Notif
+
+            <Stack>
+              <Paper p={6} px={10} bg="gray.2" shadow="0" radius="sm">
+                <Flex>
+                  <div></div>
+                  <Text size="sm">hey</Text>
+                </Flex>
+              </Paper>
+            </Stack>
           </Paper>
         </AppShell.Section>
       </AppShell.Navbar>
-      <AppShell.Main style={{ display: "flex" }} bg="#f4f4f5">
-        <Paper radius={8} bg="white" shadow="xl" display="flex" w="100%">
-          <Container fluid style={{ flex: "1" }} p="lg">
-            <AppShell.Section mb={20}>
-              <Flex align="center" justify="space-between">
-                <Breadcrumbs separator={<AltArrowRight size={14} />}>
-                  {items}
-                </Breadcrumbs>
+      <AppShell.Main style={{ display: "flex", height: "100vh" }} bg="#f4f4f5">
+        <Paper
+          radius={8}
+          bg="white"
+          shadow="xl"
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <ScrollArea h="100%" scrollbarSize={8}>
+            <Container pt={0} fluid p="lg">
+              <AppShell.Section bg="white" pos="sticky" top={0} py={20}>
+                <Flex align="center" justify="space-between">
+                  <AppBreadcrumbs customLastCrumb={customLastCrumb} />
 
-                <UserAvatar />
-              </Flex>
-            </AppShell.Section>
+                  <UserAvatar />
+                </Flex>
+              </AppShell.Section>
 
-            {children}
-          </Container>
+              {children}
+            </Container>
+          </ScrollArea>
         </Paper>
       </AppShell.Main>
     </AppShell>

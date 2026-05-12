@@ -98,12 +98,13 @@ export const client = pgTable("client", {
 
 export const project = pgTable("project", {
   id: text("id").primaryKey(),
-  title: text("title"),
+  title: text("title").notNull(),
   description: text("description"),
+  image: text("image"),
   creatorId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  clientId: text("user_id").references(() => client.id),
+  clientId: text("client_id").references(() => client.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -139,11 +140,24 @@ export const task = pgTable(
   ],
 );
 
-export const clientRelations = relations(client, ({ one }) => ({
+export const clientRelations = relations(client, ({ one, many }) => ({
   user: one(user, {
     fields: [client.creatorId],
     references: [user.id],
   }),
+  projects: many(project),
+}));
+
+export const projectRelations = relations(project, ({ one, many }) => ({
+  user: one(user, {
+    fields: [project.creatorId],
+    references: [user.id],
+  }),
+  client: one(client, {
+    fields: [project.clientId],
+    references: [client.id],
+  }),
+  tasks: many(task),
 }));
 
 export const userRelations = relations(user, ({ many }) => ({

@@ -5,7 +5,7 @@ import { cors } from "hono/cors";
 
 // routes
 import clientRoutes from "@/routes/client.route";
-import type { Session, User } from "better-auth";
+import projectRoutes from "@/routes/project.route";
 
 const app = new Hono();
 
@@ -34,6 +34,7 @@ app.use("*", async (c: Context, next) => {
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api", clientRoutes);
+app.route("/api", projectRoutes);
 
 serve(
   {
