@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import type { Context } from "hono";
+import { clientSchema } from "@shared/index";
 
 export const clientController = {
   get: async (c: Context) => {
@@ -18,7 +19,9 @@ export const clientController = {
   },
   post: async (c: Context) => {
     const formData = await c.req.formData();
-    const name = formData.get("name") as string;
-    const grade = formData.get("email") as string;
+    const f = clientSchema.parse(formData);
+
+    // const name = formData.get("name") as string;
+    // const grade = formData.get("email") as string;
   },
 };

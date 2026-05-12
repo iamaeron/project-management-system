@@ -1,9 +1,24 @@
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, TextInput, Flex, Stack } from "@mantine/core";
+import { Modal, Button, TextInput, Flex, Stack, Text } from "@mantine/core";
 import { PlusIcon } from "lucide-react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+// import { clientSchema, type ClientSchemaData } from "@/lib/types/ClientSchema";
+import { clientSchema, type ClientSchemaData } from "@shared/index";
 
 const ClientModal = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const { control, formState, handleSubmit } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+    resolver: zodResolver(clientSchema),
+  });
+
+  const onSubmit: SubmitHandler<ClientSchemaData> = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
@@ -17,17 +32,41 @@ const ClientModal = () => {
         style={{ borderRadius: "10px" }}
         transitionProps={{ transition: "fade-down", duration: 200 }}
       >
-        <Stack gap={14}>
-          <TextInput label="Name" required />
-          <TextInput label="Email" required />
-        </Stack>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack gap={14}>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <TextInput label="Name" required {...field} />
+                  <Text size="xs" mt={4} c="red.7" fw={500}>
+                    {formState.errors.name?.message}
+                  </Text>
+                </div>
+              )}
+            />
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <TextInput label="Email" required {...field} />
+                  <Text size="xs" mt={4} c="red.7" fw={500}>
+                    {formState.errors.email?.message}
+                  </Text>
+                </div>
+              )}
+            />
+          </Stack>
 
-        <Flex align="center" justify="flex-end" gap={6} mt={20}>
-          <Button onClick={close} variant="subtle">
-            Cancel
-          </Button>
-          <Button>Add</Button>
-        </Flex>
+          <Flex align="center" justify="flex-end" gap={6} mt={20}>
+            <Button onClick={close} variant="subtle" color="gray">
+              Cancel
+            </Button>
+            <Button type="submit">Add</Button>
+          </Flex>
+        </form>
       </Modal>
 
       <Button leftSection={<PlusIcon size={16} />} onClick={open}>

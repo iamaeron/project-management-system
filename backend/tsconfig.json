@@ -9,10 +9,13 @@
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "rootDir": "..",
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shared/*": ["../common/*"]
     }
   },
+  "include": ["src/**/*", "../common/**/*"],
   "exclude": ["node_modules"]
 }
