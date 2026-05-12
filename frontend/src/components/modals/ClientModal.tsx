@@ -5,10 +5,14 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { clientSchema, type ClientSchemaData } from "@/lib/types/ClientSchema";
 import { clientSchema, type ClientSchemaData } from "@shared/index";
+import { postData } from "@/lib/fetcher";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ClientModal = () => {
+  const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
-  const { control, formState, handleSubmit } = useForm({
+  const { control, formState, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
       email: "",
@@ -16,8 +20,16 @@ const ClientModal = () => {
     resolver: zodResolver(clientSchema),
   });
 
-  const onSubmit: SubmitHandler<ClientSchemaData> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ClientSchemaData> = async (data) => {
+    const res = await postData("/clients/create", {
+      ...data,
+    });
+    if (res.data.success) {
+      toast(res.data.message);
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      reset();
+      close();
+    }
   };
 
   return (

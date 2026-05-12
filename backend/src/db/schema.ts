@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  uuid,
+  foreignKey,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -88,6 +96,49 @@ export const client = pgTable("client", {
     .notNull(),
 });
 
+export const project = pgTable("project", {
+  id: text("id").primaryKey(),
+  title: text("title"),
+  description: text("description"),
+  creatorId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  clientId: text("user_id").references(() => client.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const task = pgTable(
+  "task",
+  {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    isCompleted: boolean("is_completed").default(false).notNull(),
+    projectId: text("project_id")
+      .references(() => project.id)
+      .notNull(),
+    userId: text("user_id")
+      .references(() => user.id)
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    parentId: text("parent_id"),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.parentId],
+      foreignColumns: [table.id],
+      name: "task_hierarchy_fk",
+    }),
+  ],
+);
+
 export const clientRelations = relations(client, ({ one }) => ({
   user: one(user, {
     fields: [client.creatorId],
@@ -113,4 +164,15 @@ export const accountRelations = relations(account, ({ one }) => ({
     fields: [account.userId],
     references: [user.id],
   }),
+}));
+
+export const taskRelations = relations(task, ({ one, many }) => ({
+  project: one(project, { fields: [task.projectId], references: [project.id] }),
+  user: one(user, { fields: [task.userId], references: [user.id] }),
+  parentTask: one(task, {
+    fields: [task.parentId],
+    references: [task.id],
+    relationName: "task_to_subtasks",
+  }),
+  subtasks: many(task, { relationName: "task_to_subtasks" }),
 }));

@@ -1,6 +1,9 @@
 import { db } from "@/db";
 import type { Context } from "hono";
 import { clientSchema } from "@shared/index";
+import { client } from "@/db/schema";
+import { nanoid } from "nanoid";
+import type { User } from "better-auth";
 
 export const clientController = {
   get: async (c: Context) => {
@@ -18,10 +21,24 @@ export const clientController = {
     });
   },
   post: async (c: Context) => {
-    const formData = await c.req.formData();
-    const f = clientSchema.parse(formData);
+    const user: User = c.get("user");
+    const formData = await c.req.json();
+    const parsedData = clientSchema.parse(formData);
 
-    // const name = formData.get("name") as string;
-    // const grade = formData.get("email") as string;
+    const createdClient = await db
+      .insert(client)
+      .values({
+        id: nanoid(),
+        creatorId: user.id,
+        email: parsedData.email,
+        name: parsedData.name,
+      })
+      .returning();
+
+    return c.json({
+      createdClient,
+      success: true,
+      message: "Added a new client successfully!",
+    });
   },
 };
