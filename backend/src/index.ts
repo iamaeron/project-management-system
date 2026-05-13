@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 // routes
 import clientRoutes from "@/routes/client.route";
 import projectRoutes from "@/routes/project.route";
+import taskRoutes from "@/routes/task.route";
 
 const app = new Hono();
 
@@ -35,6 +36,7 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api", clientRoutes);
 app.route("/api", projectRoutes);
+app.route("/api", taskRoutes);
 
 serve(
   {

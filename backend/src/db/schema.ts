@@ -5,7 +5,6 @@ import {
   timestamp,
   boolean,
   index,
-  uuid,
   foreignKey,
 } from "drizzle-orm/pg-core";
 
@@ -117,6 +116,7 @@ export const task = pgTable(
   {
     id: text("id").primaryKey(),
     title: text("title").notNull(),
+    description: text("description"),
     isCompleted: boolean("is_completed").default(false).notNull(),
     projectId: text("project_id")
       .references(() => project.id)

@@ -2,8 +2,11 @@ import {
   Anchor,
   Box,
   Card,
+  Divider,
   Flex,
   Grid,
+  Group,
+  Image,
   RingProgress,
   Text,
 } from "@mantine/core";
@@ -11,6 +14,7 @@ import AppLayout from "@/layouts/creator/AppLayout";
 import ProjectModal from "@/components/modals/ProjectModal";
 import { useFetchProjects } from "@/hooks/useFetchProjects";
 import { Link } from "react-router";
+import type { Project, Task } from "@shared/src/db.types";
 
 const CreatorProjects = () => {
   const { data, isFetching } = useFetchProjects();
@@ -38,70 +42,122 @@ const CreatorProjects = () => {
       </Flex>
 
       <div>
-        <Grid>
-          {data.projects.map((project) => (
-            <Grid.Col span={6} key={project.id}>
-              <Card
-                padding="sm"
-                withBorder
-                orientation="horizontal"
-                shadow="none"
-              >
-                <Card.Section inheritPadding px="xs" withBorder>
-                  <RingProgress
-                    roundCaps
-                    thickness={6}
-                    size={150}
-                    // sections={[{ value: (completed / total) * 100, color: 'blue' }]}
-                    sections={[{ value: 0, color: "blue" }]}
-                    label={
-                      <div>
-                        <Text ta="center" fz="lg">
-                          {/* {((completed / total) * 100).toFixed(0)}% */}
-                          0%
-                        </Text>
-                        <Text ta="center" fz="xs" c="gray.7">
-                          Completed
-                        </Text>
-                      </div>
-                    }
+        <Grid gap={16}>
+          {data.projects.map(
+            (
+              project: Project & {
+                tasks: Task[];
+                completedCount: string;
+                pendingCount: string;
+              },
+            ) => (
+              <Grid.Col span={6} key={project.id}>
+                <Card padding="sm" shadow="none">
+                  <Image
+                    w="100%"
+                    h={100}
+                    radius={6}
+                    src="https://meshgradient.com/gallery/2.png"
+                    mb={10}
                   />
-                </Card.Section>
 
-                <Card.Section inheritPadding px="md">
-                  <Anchor
-                    component={Link}
-                    to={`/creator/projects/${project.id}`}
-                    fz="lg"
-                    fw={500}
-                    c="dark"
-                  >
-                    <span style={{ textTransform: "capitalize" }}>
-                      {project.title}
-                    </span>
-                  </Anchor>
-                  <Box mt="xs">
-                    <Text fz="sm" fw={500}>
-                      {project.client.name}
-                    </Text>
-                    <Text fz="xs" c="gray.7">
-                      Client
-                    </Text>
-                  </Box>
-                  <Box mt="xs">
-                    <Text fz="sm" fw={500}>
-                      1887
-                    </Text>
-                    <Text fz="xs" c="gray.7">
-                      Completed
-                    </Text>
-                  </Box>
+                  <Group>
+                    <Card.Section inheritPadding px="xs">
+                      <RingProgress
+                        roundCaps
+                        thickness={6}
+                        size={150}
+                        sections={[
+                          {
+                            value:
+                              (Number(project.completedCount) /
+                                project.tasks.length) *
+                              100,
+                            color: "blue",
+                          },
+                        ]}
+                        label={
+                          <div>
+                            <Text ta="center" fz="lg">
+                              {(
+                                (Number(project.completedCount) /
+                                  project.tasks.length) *
+                                100
+                              ).toFixed(0)}
+                              %
+                            </Text>
+                            <Text ta="center" fz="xs" c="gray.7">
+                              Completed
+                            </Text>
+                          </div>
+                        }
+                      />
+                    </Card.Section>
 
-                  {/* <Group mt="sm">{items}</Group> */}
-                </Card.Section>
-              </Card>
-            </Grid.Col>
-          ))}
+                    <Card.Section inheritPadding px="md">
+                      <Anchor
+                        component={Link}
+                        to={`/creator/projects/${project.id}`}
+                        fz="lg"
+                        fw={500}
+                        c="dark"
+                      >
+                        <span style={{ textTransform: "capitalize" }}>
+                          {project.title}
+                        </span>
+                      </Anchor>
+                      <Group gap={20}>
+                        <Box mt="xs">
+                          <Text fz="sm" fw={600}>
+                            {project.tasks.length}
+                          </Text>
+                          <Text fz="xs" c="gray.7">
+                            Tasks
+                          </Text>
+                        </Box>
+
+                        <div
+                          style={{
+                            borderRight: "1px solid #adb5bd",
+                            height: "14px",
+                          }}
+                        ></div>
+
+                        <Box mt="xs">
+                          <Text fz="sm" fw={600}>
+                            {project.completedCount}
+                          </Text>
+                          <Text fz="xs" c="gray.7">
+                            Completed
+                          </Text>
+                        </Box>
+
+                        <Box mt="xs">
+                          <Text fz="sm" fw={600}>
+                            {project.pendingCount}
+                          </Text>
+                          <Text fz="xs" c="gray.7">
+                            Pending
+                          </Text>
+                        </Box>
+                      </Group>
+
+                      <Box mt="xs">
+                        <Text fz="sm" fw={500}>
+                          {project.client.name}
+                        </Text>
+                        <Text fz="xs" c="gray.7">
+                          Client
+                        </Text>
+                      </Box>
+
+                      {/* <Group mt="sm">{items}</Group> */}
+                    </Card.Section>
+                  </Group>
+                </Card>
+              </Grid.Col>
+            ),
+          )}
         </Grid>
       </div>
     </AppLayout>

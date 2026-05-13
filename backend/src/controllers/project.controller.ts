@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { project } from "@/db/schema";
 import { projectSchema } from "@shared/index";
 import type { User } from "better-auth";
-import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { nanoid } from "nanoid";
 
@@ -17,8 +16,27 @@ export const projectController = {
       },
     });
 
+    const projectWithCounts = projects.map((project) => {
+      let completed = 0;
+      let pending = 0;
+
+      project.tasks.map((task) => {
+        if (task.isCompleted) {
+          completed++;
+        } else {
+          pending++;
+        }
+      });
+
+      return {
+        ...project,
+        completedCount: completed,
+        pendingCount: pending,
+      };
+    });
+
     return c.json({
-      projects,
+      projects: projectWithCounts,
       success: true,
       message: "Projects found!",
     });
@@ -57,6 +75,10 @@ export const projectController = {
 
     const foundProject = await db.query.project.findFirst({
       where: (project, { eq }) => eq(project.id, projectId),
+      with: {
+        tasks: true,
+        client: true,
+      },
     });
 
     if (!foundProject) {

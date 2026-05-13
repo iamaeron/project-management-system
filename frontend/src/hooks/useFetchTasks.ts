@@ -1,11 +1,11 @@
 import { getData } from "@/lib/fetcher";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFetchSingleProject = (id: string) => {
+export const useFetchTasks = (projectId: string) => {
   return useQuery({
-    queryKey: ["single_project", id],
+    queryKey: ["tasks"],
     queryFn: async () => {
-      const res = await getData(`/projects/${id}`);
+      const res = await getData(`/projects/${projectId}/tasks`);
       return res.data;
     },
   });

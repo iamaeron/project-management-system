@@ -6,7 +6,6 @@ export const useFetchProjects = () => {
     queryKey: ["projects"],
     queryFn: async () => {
       const res = await getData("/projects");
-      console.log(res);
       return res.data;
     },
   });

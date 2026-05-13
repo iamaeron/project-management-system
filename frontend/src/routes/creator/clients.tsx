@@ -1,8 +1,18 @@
 import ClientModal from "@/components/modals/ClientModal";
 import { useFetchClients } from "@/hooks/useFetchClients";
 import AppLayout from "@/layouts/creator/AppLayout";
-import { Button, Center, Flex, Paper, Table, Text } from "@mantine/core";
-import { Copy, Eye } from "lucide-react";
+import {
+  ActionIcon,
+  Button,
+  Center,
+  Flex,
+  Menu,
+  Paper,
+  Table,
+  Text,
+} from "@mantine/core";
+import { Bill, Folder } from "@solar-icons/react";
+import { Copy, Ellipsis, Eye, UserPlus } from "lucide-react";
 
 interface ClientData {
   name: string;
@@ -42,7 +52,7 @@ const CreatorClientsPage = () => {
                 <Table.Th>Email</Table.Th>
                 <Table.Th>Projects</Table.Th>
                 <Table.Th>Invoices</Table.Th>
-                <Table.Th>Invite</Table.Th>
+                <Table.Th> </Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -52,34 +62,32 @@ const CreatorClientsPage = () => {
                     <Table.Td fw={500}>{client.name}</Table.Td>
                     <Table.Td>{client.email}</Table.Td>
                     <Table.Td>
-                      <Button
-                        leftSection={<Eye size={16} />}
-                        variant="subtle"
-                        color="gray"
-                        size="compact-sm"
-                      >
-                        View
-                      </Button>
+                      <Text>1</Text>
                     </Table.Td>
                     <Table.Td>
-                      <Button
-                        leftSection={<Eye size={16} />}
-                        variant="subtle"
-                        color="gray"
-                        size="compact-sm"
-                      >
-                        View
-                      </Button>
+                      <Text>1</Text>
                     </Table.Td>
                     <Table.Td>
-                      <Button
-                        leftSection={<Copy size={16} />}
-                        variant="subtle"
-                        color="gray"
-                        size="compact-sm"
-                      >
-                        Copy
-                      </Button>
+                      <Menu shadow="xl" position="bottom-end">
+                        <Menu.Target>
+                          <ActionIcon variant="subtle" color="gray">
+                            <Ellipsis size={16} />
+                          </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                          <Menu.Label>{client.name}</Menu.Label>
+                          <Menu.Item leftSection={<UserPlus size={16} />}>
+                            Invite Client
+                          </Menu.Item>
+                          <Menu.Item leftSection={<Folder size={16} />}>
+                            View Projects
+                          </Menu.Item>
+                          <Menu.Item leftSection={<Bill size={16} />}>
+                            See Invoices
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                      </Menu>
                     </Table.Td>
                   </Table.Tr>
                 ))

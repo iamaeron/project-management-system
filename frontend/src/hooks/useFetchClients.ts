@@ -6,7 +6,6 @@ export const useFetchClients = () => {
     queryKey: ["clients"],
     queryFn: async () => {
       const res = await getData("/clients");
-      console.log(res);
       return res.data;
     },
   });
