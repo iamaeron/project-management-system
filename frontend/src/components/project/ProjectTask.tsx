@@ -37,7 +37,7 @@ const ProjectTask = ({ task }: { task: Task }) => {
   };
 
   return (
-    <Grid.Col span={6}>
+    <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
       <Paper
         p={16}
         shadow="none"
