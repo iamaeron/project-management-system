@@ -1,8 +1,6 @@
 import {
   ActionIcon,
-  Anchor,
   AppShell,
-  Breadcrumbs,
   Container,
   Flex,
   Paper,
@@ -10,10 +8,8 @@ import {
   ScrollArea,
   Stack,
   Text,
-  Tooltip,
 } from "@mantine/core";
 import {
-  AltArrowRight,
   Bill,
   CaseRound,
   HomeSmile,
@@ -24,18 +20,20 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import SidebarLink from "@/components/sidebar/SidebarLink";
 import { authClient } from "@/lib/auth-client";
-import { useLocation } from "react-router";
+import { Link } from "react-router";
 import UserAvatar from "@/components/user/UserAvatar";
 import AppBreadcrumbs from "@/components/app/AppBreadcrumbs";
+import { ArrowLeft } from "lucide-react";
+import AppTooltip from "@/components/app/AppTooltip";
 
 interface AppLayoutProps {
   children: React.ReactNode;
   customLastCrumb?: string;
+  backPage?: string;
 }
 
-const AppLayout = ({ children, customLastCrumb }: AppLayoutProps) => {
+const AppLayout = ({ children, customLastCrumb, backPage }: AppLayoutProps) => {
   const user = authClient.useSession();
-  const pathname = useLocation().pathname;
   const [opened, { toggle }] = useDisclosure();
 
   return (
@@ -61,16 +59,11 @@ const AppLayout = ({ children, customLastCrumb }: AppLayoutProps) => {
 
               <Pill>Creator</Pill>
             </Flex>
-            <Tooltip
-              label="Toggle sidebar"
-              style={{ fontSize: "13px" }}
-              position="bottom"
-              openDelay={500}
-            >
+            <AppTooltip label="Toggle sidebar" openDelay={500}>
               <ActionIcon variant="subtle" color="#a1a1aa" onClick={toggle}>
                 <Sidebar size={22} color="#3f3f46" />
               </ActionIcon>
-            </Tooltip>
+            </AppTooltip>
           </Flex>
         </AppShell.Section>
         <AppShell.Section pl="md" pe="0">
@@ -146,9 +139,39 @@ const AppLayout = ({ children, customLastCrumb }: AppLayoutProps) => {
         >
           <ScrollArea h="100%" scrollbarSize={8}>
             <Container pt={0} fluid p="lg">
-              <AppShell.Section bg="white" pos="sticky" top={0} py={20}>
+              <AppShell.Section
+                bg="white"
+                pos="sticky"
+                style={{ zIndex: "50" }}
+                top={0}
+                py={20}
+              >
                 <Flex align="center" justify="space-between">
-                  <AppBreadcrumbs customLastCrumb={customLastCrumb} />
+                  <Flex align="center">
+                    {backPage ? (
+                      <>
+                        <ActionIcon
+                          component={Link}
+                          to={backPage}
+                          variant="subtle"
+                          color="gray"
+                          // leftSection={<ChevronLeft size={16} />}
+                        >
+                          <ArrowLeft size={16} />
+                        </ActionIcon>
+                        <div
+                          style={{
+                            // borderRight: "1px solid #adb5bd",
+                            height: "8px",
+                            margin: "0px 20px 0 10px",
+                          }}
+                        ></div>
+                      </>
+                    ) : (
+                      <div></div>
+                    )}
+                    <AppBreadcrumbs customLastCrumb={customLastCrumb} />
+                  </Flex>
 
                   <UserAvatar />
                 </Flex>

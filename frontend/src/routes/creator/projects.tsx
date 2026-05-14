@@ -2,7 +2,6 @@ import {
   Anchor,
   Box,
   Card,
-  Divider,
   Flex,
   Grid,
   Group,
@@ -70,20 +69,24 @@ const CreatorProjects = () => {
                         sections={[
                           {
                             value:
-                              (Number(project.completedCount) /
-                                project.tasks.length) *
-                              100,
+                              project.tasks.length > 0
+                                ? (Number(project.completedCount) /
+                                    project.tasks.length) *
+                                  100
+                                : 0,
                             color: "blue",
                           },
                         ]}
                         label={
                           <div>
                             <Text ta="center" fz="lg">
-                              {(
-                                (Number(project.completedCount) /
-                                  project.tasks.length) *
-                                100
-                              ).toFixed(0)}
+                              {project.tasks.length > 0
+                                ? (
+                                    (Number(project.completedCount) /
+                                      project.tasks.length) *
+                                    100
+                                  ).toFixed(0)
+                                : 0}
                               %
                             </Text>
                             <Text ta="center" fz="xs" c="gray.7">

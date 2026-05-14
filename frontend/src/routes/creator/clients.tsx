@@ -3,7 +3,6 @@ import { useFetchClients } from "@/hooks/useFetchClients";
 import AppLayout from "@/layouts/creator/AppLayout";
 import {
   ActionIcon,
-  Button,
   Center,
   Flex,
   Menu,
@@ -11,14 +10,9 @@ import {
   Table,
   Text,
 } from "@mantine/core";
+import type { Client, Task } from "@shared/src/db.types";
 import { Bill, Folder } from "@solar-icons/react";
-import { Copy, Ellipsis, Eye, UserPlus } from "lucide-react";
-
-interface ClientData {
-  name: string;
-  email: string;
-  id: string;
-}
+import { Ellipsis, UserPlus } from "lucide-react";
 
 const CreatorClientsPage = () => {
   const { data, isFetching } = useFetchClients();
@@ -57,12 +51,12 @@ const CreatorClientsPage = () => {
             </Table.Thead>
             <Table.Tbody>
               {data.clients.length ? (
-                data.clients.map((client: ClientData) => (
+                data.clients.map((client: Client & { projects: Task[] }) => (
                   <Table.Tr key={client.id}>
                     <Table.Td fw={500}>{client.name}</Table.Td>
                     <Table.Td>{client.email}</Table.Td>
                     <Table.Td>
-                      <Text>1</Text>
+                      <Text>{client.projects.length}</Text>
                     </Table.Td>
                     <Table.Td>
                       <Text>1</Text>

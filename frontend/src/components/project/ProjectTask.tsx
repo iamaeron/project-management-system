@@ -7,15 +7,14 @@ import {
   Flex,
   Grid,
   Group,
+  Menu,
   Paper,
-  Pill,
-  Select,
   Text,
 } from "@mantine/core";
 import type { Task } from "@shared/src/db.types";
 import { Pen } from "@solar-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCheck, ChevronDown, LoaderCircle } from "lucide-react";
+import { CheckCheck, ChevronDown, Image, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -24,10 +23,10 @@ const ProjectTask = ({ task }: { task: Task }) => {
 
   const [checked, setChecked] = useState(task.isCompleted);
 
-  const onSubmit = async () => {
+  const onSubmit = async (status: boolean) => {
     const res = await putData(
-      `/projects/${task.projectId}/tasks/${task.id}/done`,
-      {},
+      `/projects/${task.projectId}/tasks/${task.id}/status/toggle`,
+      { status },
     );
     if (res.data.success) {
       toast(res.data.message);
@@ -62,38 +61,26 @@ const ProjectTask = ({ task }: { task: Task }) => {
               }
             />
             <Box mt={2} ml={28}>
-              {/* <Pill
-                bg={task.isCompleted ? "green.1" : "orange.1"}
-                c={task.isCompleted ? "green.9" : "orange.9"}
-                mb={8}
-                fw={600}
+              <Text
+                c="gray.7"
+                size="sm"
+                style={{ whiteSpace: "pre-wrap" }}
+                lineClamp={2}
               >
-                {task.isCompleted ? "Finished" : "Pending"}
-              </Pill> */}
-              <Text c="gray.7" size="sm" lineClamp={2}>
                 {task.description}
               </Text>
             </Box>
           </Box>
-          <Group>
-            <ActionIcon variant="subtle" color="gray">
-              <Pen size={20} />
-            </ActionIcon>
-          </Group>
+          {!task.isCompleted ? (
+            <Group>
+              <ActionIcon variant="subtle" color="gray">
+                <Pen size={20} />
+              </ActionIcon>
+            </Group>
+          ) : null}
         </Flex>
 
         <Flex mt={20} align="flex-end" justify="flex-end">
-          {/* <Button
-            size="compact-sm"
-            style={{ borderColor: "#ced4da" }}
-            variant="outline"
-            radius="sm"
-            leftSection={<CheckCheck size={16} />}
-            onClick={onSubmit}
-          >
-            Done
-          </Button> */}
-
           <Button.Group style={{ gap: "2px" }}>
             <Button.GroupSection
               variant="light"
@@ -103,29 +90,53 @@ const ProjectTask = ({ task }: { task: Task }) => {
               }}
               c={task.isCompleted ? "green.9" : "orange.9"}
               bg={task.isCompleted ? "green.1" : "orange.1"}
-              // style={{ borderColor: task.isCompleted ? "#12b886" : "#ffa94d" }}
               size="compact-sm"
               radius="md"
             >
               {task.isCompleted ? <CheckCheck size={16} /> : null}
               <span style={{ marginLeft: task.isCompleted ? "6px" : "" }}>
-                {" "}
                 {task.isCompleted ? "Done" : "Pending"}
               </span>
             </Button.GroupSection>
-            <Button
-              size="compact-sm"
-              // style={{ borderColor: "#ced4da" }}
-              variant="light"
-              color="gray"
-              style={{
-                borderTopLeftRadius: "3px",
-                borderBottomLeftRadius: "3px",
-              }}
-              radius="md"
-            >
-              <ChevronDown size={16} />
-            </Button>
+            <Menu position="bottom-end" shadow="xl">
+              <Menu.Target>
+                <Button
+                  size="compact-sm"
+                  variant="light"
+                  color="gray"
+                  style={{
+                    borderTopLeftRadius: "3px",
+                    borderBottomLeftRadius: "3px",
+                  }}
+                  radius="md"
+                >
+                  <ChevronDown size={16} />
+                </Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label>{task.title}</Menu.Label>
+                <Menu.Item mb={4} leftSection={<Image size={16} />}>
+                  Attach progress image
+                </Menu.Item>
+                <Menu.Divider />
+                {/* <Menu.Label>Task Status</Menu.Label> */}
+                <Menu.Item
+                  // bg={task.isCompleted ? "orange.0" : "green.0"}
+                  // c={task.isCompleted ? "orange.9" : "green.9"}
+                  onClick={() => onSubmit(!task.isCompleted)}
+                  leftSection={
+                    task.isCompleted ? (
+                      <LoaderCircle size={16} />
+                    ) : (
+                      <CheckCheck size={16} />
+                    )
+                  }
+                >
+                  {task.isCompleted ? "Set as Pending" : "Mark as Done"}
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </Button.Group>
         </Flex>
       </Paper>

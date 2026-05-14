@@ -11,6 +11,7 @@ export const clientController = {
       limit: 20,
       with: {
         user: true,
+        projects: true,
       },
     });
 

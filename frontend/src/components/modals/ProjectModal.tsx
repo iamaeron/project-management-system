@@ -63,7 +63,7 @@ const ProjectModal = () => {
               control={control}
               render={({ field }) => (
                 <div>
-                  <TextInput label="Title" required {...field} />
+                  <TextInput data-autofocus label="Title" required {...field} />
                   <Text size="xs" mt={4} c="red.7" fw={500}>
                     {formState.errors.title?.message}
                   </Text>

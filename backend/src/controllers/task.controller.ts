@@ -84,8 +84,9 @@ export const taskController = {
       message: "Project found!",
     });
   },
-  markAsDone: async (c: Context) => {
+  toggleStatus: async (c: Context) => {
     const taskId = c.req.param("taskId");
+    const value = await c.req.json();
 
     if (!taskId) {
       return c.json({
@@ -97,14 +98,14 @@ export const taskController = {
     const updatedTask = await db
       .update(task)
       .set({
-        isCompleted: true,
+        isCompleted: value.status,
       })
       .where(eq(task.id, taskId));
 
     return c.json({
       task: updatedTask,
       success: true,
-      message: "Task marked as done!",
+      message: "Task status updated!",
     });
   },
 };

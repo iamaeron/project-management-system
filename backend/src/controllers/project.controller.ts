@@ -76,7 +76,9 @@ export const projectController = {
     const foundProject = await db.query.project.findFirst({
       where: (project, { eq }) => eq(project.id, projectId),
       with: {
-        tasks: true,
+        tasks: {
+          orderBy: (t, { desc }) => desc(t.createdAt),
+        },
         client: true,
       },
     });
@@ -88,8 +90,23 @@ export const projectController = {
       });
     }
 
+    let completed = 0;
+    let pending = 0;
+
+    const projectWithCounts = foundProject.tasks.map((task) => {
+      if (task.isCompleted) {
+        completed++;
+      } else {
+        pending++;
+      }
+    });
+
     return c.json({
-      project: foundProject,
+      project: {
+        ...foundProject,
+        completedCount: completed,
+        pendingCount: pending,
+      },
       success: true,
       message: "Project found!",
     });
