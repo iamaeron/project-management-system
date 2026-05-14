@@ -1,8 +1,11 @@
 import {
   ActionIcon,
   AppShell,
+  Button,
   Container,
+  Divider,
   Flex,
+  Menu,
   Paper,
   Pill,
   ScrollArea,
@@ -23,7 +26,7 @@ import { authClient } from "@/lib/auth-client";
 import { Link } from "react-router";
 import UserAvatar from "@/components/user/UserAvatar";
 import AppBreadcrumbs from "@/components/app/AppBreadcrumbs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, DoorClosed, LogOut, Settings, User } from "lucide-react";
 import AppTooltip from "@/components/app/AppTooltip";
 
 interface AppLayoutProps {
@@ -173,7 +176,36 @@ const AppLayout = ({ children, customLastCrumb, backPage }: AppLayoutProps) => {
                     <AppBreadcrumbs customLastCrumb={customLastCrumb} />
                   </Flex>
 
-                  <UserAvatar />
+                  <Menu
+                    withArrow
+                    arrowOffset={8}
+                    position="bottom-end"
+                    width={180}
+                    shadow="xl"
+                  >
+                    <Menu.Target>
+                      <ActionIcon variant="white" size="md" radius="100%">
+                        <UserAvatar />
+                      </ActionIcon>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Label>{user.data?.user.name}</Menu.Label>
+                      <Menu.Item leftSection={<User size={16} />}>
+                        Your Profile
+                      </Menu.Item>
+                      <Menu.Item leftSection={<Settings size={16} />}>
+                        Settings
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        onClick={async () => await authClient.signOut()}
+                        color="red"
+                        leftSection={<LogOut size={16} />}
+                      >
+                        Log out
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 </Flex>
               </AppShell.Section>
 
