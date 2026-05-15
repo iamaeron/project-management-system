@@ -1,11 +1,13 @@
 import {
   Anchor,
   Box,
+  Button,
   Card,
   Flex,
   Grid,
   Group,
   Image,
+  Paper,
   RingProgress,
   Text,
 } from "@mantine/core";
@@ -14,6 +16,7 @@ import ProjectModal from "@/components/modals/ProjectModal";
 import { useFetchProjects } from "@/hooks/useFetchProjects";
 import { Link } from "react-router";
 import type { Project, Task } from "@shared/src/db.types";
+import { Filter } from "lucide-react";
 
 const CreatorProjects = () => {
   const { data, isFetching } = useFetchProjects();
@@ -30,18 +33,33 @@ const CreatorProjects = () => {
 
   return (
     <AppLayout>
-      <Flex mb={20} align="flex-end" justify="space-between">
+      <Flex
+        style={{ position: "sticky", top: "68px", zIndex: "40" }}
+        pb={10}
+        mb={10}
+        bg="white"
+        align="flex-end"
+        justify="space-between"
+      >
         <Text size="xl" fw={600}>
           Projects
         </Text>
 
-        <Flex>
+        <Flex gap={10} align="center">
+          <Button
+            leftSection={<Filter size={16} />}
+            size="sm"
+            variant="outline"
+            bd="1px solid #dee2e6"
+          >
+            Sort By
+          </Button>
           <ProjectModal />
         </Flex>
       </Flex>
 
-      <div>
-        <Grid gap={16}>
+      <div style={{ paddingBottom: "100px" }}>
+        <Grid gap={40}>
           {data.projects.map(
             (
               project: Project & {
@@ -51,7 +69,7 @@ const CreatorProjects = () => {
               },
             ) => (
               <Grid.Col span={6} key={project.id}>
-                <Card padding="sm" shadow="none">
+                <Card padding="none" shadow="none">
                   <Image
                     w="100%"
                     h={100}
@@ -60,7 +78,7 @@ const CreatorProjects = () => {
                     mb={10}
                   />
 
-                  <Group>
+                  <Group gap={0}>
                     <Card.Section inheritPadding px="xs">
                       <RingProgress
                         roundCaps

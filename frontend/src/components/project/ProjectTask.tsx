@@ -12,7 +12,15 @@ import {
   Text,
 } from "@mantine/core";
 import type { Task } from "@shared/src/db.types";
-import { Pen } from "@solar-icons/react";
+import {
+  CheckCircle,
+  ChecklistMinimalistic,
+  CheckRead,
+  ClipboardCheck,
+  GalleryAdd,
+  Hourglass,
+  Pen,
+} from "@solar-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { CheckCheck, ChevronDown, Image, LoaderCircle } from "lucide-react";
 import { useState } from "react";
@@ -116,7 +124,16 @@ const ProjectTask = ({ task }: { task: Task }) => {
 
               <Menu.Dropdown>
                 <Menu.Label>{task.title}</Menu.Label>
-                <Menu.Item mb={4} leftSection={<Image size={16} />}>
+                <Menu.Item
+                  mb={4}
+                  leftSection={
+                    <GalleryAdd
+                      weight="BoldDuotone"
+                      color="#495057"
+                      size={22}
+                    />
+                  }
+                >
                   Attach progress image
                 </Menu.Item>
                 <Menu.Divider />
@@ -127,9 +144,17 @@ const ProjectTask = ({ task }: { task: Task }) => {
                   onClick={() => onSubmit(!task.isCompleted)}
                   leftSection={
                     task.isCompleted ? (
-                      <LoaderCircle size={16} />
+                      <Hourglass
+                        weight="BoldDuotone"
+                        color="#495057"
+                        size={22}
+                      />
                     ) : (
-                      <CheckCheck size={16} />
+                      <ClipboardCheck
+                        weight="BoldDuotone"
+                        color="#495057"
+                        size={22}
+                      />
                     )
                   }
                 >

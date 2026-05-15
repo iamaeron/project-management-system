@@ -4,15 +4,24 @@ import AppLayout from "@/layouts/creator/AppLayout";
 import {
   ActionIcon,
   Center,
+  CopyButton,
   Flex,
   Menu,
   Paper,
   Table,
   Text,
 } from "@mantine/core";
-import type { Client, Task } from "@shared/src/db.types";
-import { Bill, Folder } from "@solar-icons/react";
-import { Ellipsis, UserPlus } from "lucide-react";
+import type { Client, Project, Task } from "@shared/src/db.types";
+import {
+  Bill,
+  CheckCircle,
+  ClipboardCheck,
+  Folder,
+  Library,
+  LinkMinimalistic,
+  UserPlusRounded,
+} from "@solar-icons/react";
+import { Check, Ellipsis, UserPlus } from "lucide-react";
 
 const CreatorClientsPage = () => {
   const { data, isFetching } = useFetchClients();
@@ -51,7 +60,7 @@ const CreatorClientsPage = () => {
             </Table.Thead>
             <Table.Tbody>
               {data.clients.length ? (
-                data.clients.map((client: Client & { projects: Task[] }) => (
+                data.clients.map((client: Client & { projects: Project[] }) => (
                   <Table.Tr key={client.id}>
                     <Table.Td fw={500}>{client.name}</Table.Td>
                     <Table.Td>{client.email}</Table.Td>
@@ -62,7 +71,7 @@ const CreatorClientsPage = () => {
                       <Text>1</Text>
                     </Table.Td>
                     <Table.Td>
-                      <Menu shadow="xl" position="bottom-end">
+                      <Menu shadow="xl" offset={2} position="bottom-end">
                         <Menu.Target>
                           <ActionIcon variant="subtle" color="gray">
                             <Ellipsis size={16} />
@@ -71,13 +80,81 @@ const CreatorClientsPage = () => {
 
                         <Menu.Dropdown>
                           <Menu.Label>{client.name}</Menu.Label>
-                          <Menu.Item leftSection={<UserPlus size={16} />}>
-                            Invite Client
-                          </Menu.Item>
-                          <Menu.Item leftSection={<Folder size={16} />}>
-                            View Projects
-                          </Menu.Item>
-                          <Menu.Item leftSection={<Bill size={16} />}>
+
+                          <CopyButton
+                            value={`http://localhost:5173/invite/fljkds78fbrwe78fs`}
+                          >
+                            {({ copied, copy }) => (
+                              <Menu.Item
+                                closeMenuOnClick={false}
+                                onClick={copy}
+                                leftSection={
+                                  <UserPlusRounded
+                                    weight="BoldDuotone"
+                                    color="#495057"
+                                    size={22}
+                                  />
+                                }
+                                rightSection={
+                                  copied ? (
+                                    <Check color="#40c057" size={22} />
+                                  ) : (
+                                    <LinkMinimalistic
+                                      weight="BoldDuotone"
+                                      color="#495057"
+                                      size={22}
+                                    />
+                                  )
+                                }
+                              >
+                                Invite to your Portal
+                              </Menu.Item>
+                            )}
+                          </CopyButton>
+
+                          <Menu.Sub openDelay={120} closeDelay={150}>
+                            <Menu.Sub.Target>
+                              <Menu.Sub.Item
+                                leftSection={
+                                  <Library
+                                    strokeWidth={2}
+                                    weight="BoldDuotone"
+                                    size={22}
+                                    color="#495057"
+                                  />
+                                }
+                              >
+                                View Projects
+                              </Menu.Sub.Item>
+                            </Menu.Sub.Target>
+
+                            <Menu.Sub.Dropdown>
+                              <Menu.Label>Projects</Menu.Label>
+                              {client.projects.map((project) => (
+                                <Menu.Item
+                                  leftSection={
+                                    <Folder
+                                      weight="BoldDuotone"
+                                      color="#495057"
+                                      size={22}
+                                    />
+                                  }
+                                >
+                                  {project.title}
+                                </Menu.Item>
+                              ))}
+                            </Menu.Sub.Dropdown>
+                          </Menu.Sub>
+                          <Menu.Item
+                            leftSection={
+                              <Bill
+                                strokeWidth={2}
+                                weight="BoldDuotone"
+                                color="#495057"
+                                size={22}
+                              />
+                            }
+                          >
                             See Invoices
                           </Menu.Item>
                         </Menu.Dropdown>
