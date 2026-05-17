@@ -68,7 +68,7 @@ const CreatorProjects = () => {
                 pendingCount: string;
               },
             ) => (
-              <Grid.Col span={6} key={project.id}>
+              <Grid.Col span={{ base: 12, md: 6, lg: 4 }} key={project.id}>
                 <Card padding="none" shadow="none">
                   <Image
                     w="100%"

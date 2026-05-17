@@ -89,6 +89,9 @@ const ProjectModal = () => {
               render={({ field }) => (
                 <div>
                   <Select
+                    comboboxProps={{
+                      shadow: "md",
+                    }}
                     label="Client"
                     placeholder="Pick value"
                     data={

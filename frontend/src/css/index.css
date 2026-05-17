@@ -9,3 +9,11 @@
 .mantine-Modal-title {
   font-weight: 600 !important;
 }
+
+.mantine-ActionIcon-icon {
+  color: var(--mantine-color-gray-6);
+}
+
+.mantine-ActionIcon-root:hover .mantine-ActionIcon-icon {
+  color: var(--mantine-color-gray-7);
+}

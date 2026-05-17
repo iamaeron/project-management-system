@@ -22,7 +22,13 @@ import {
   Pen,
 } from "@solar-icons/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CheckCheck, ChevronDown, Image, LoaderCircle } from "lucide-react";
+import {
+  CheckCheck,
+  ChevronDown,
+  Image,
+  LoaderCircle,
+  Pin,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -57,18 +63,24 @@ const ProjectTask = ({ task }: { task: Task }) => {
       >
         <Flex gap={10} justify="space-between" align="flex-start">
           <Box>
-            <Checkbox
-              size="xs"
-              disabled={task.isCompleted}
-              checked={checked}
-              onChange={(event) => setChecked(event.currentTarget.checked)}
-              label={
-                <Text mt={-3} fw={500}>
-                  {task.title}
-                </Text>
-              }
-            />
-            <Box mt={2} ml={28}>
+            <Flex align="center" gap={14}>
+              <ActionIcon
+                m={-6}
+                variant="subtle"
+                color="gray"
+                className="act-root-icon"
+              >
+                <Pin
+                  size={20}
+                  style={{ rotate: "40deg" }}
+                  className="act-icon"
+                />
+              </ActionIcon>
+              <Text mt={-3} fw={500}>
+                {task.title}
+              </Text>
+            </Flex>
+            <Box mt={2} ml={32}>
               <Text
                 c="gray.7"
                 size="sm"
@@ -81,7 +93,12 @@ const ProjectTask = ({ task }: { task: Task }) => {
           </Box>
           {!task.isCompleted ? (
             <Group>
-              <ActionIcon variant="subtle" color="gray">
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                c="gray.6"
+                className="act-root-icon"
+              >
                 <Pen size={20} />
               </ActionIcon>
             </Group>
