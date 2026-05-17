@@ -1,9 +1,7 @@
 import {
   ActionIcon,
   AppShell,
-  Button,
   Container,
-  Divider,
   Flex,
   Menu,
   Paper,
@@ -18,7 +16,10 @@ import {
   HomeSmile,
   Inbox,
   NotesMinimalistic,
+  Settings,
+  SettingsMinimalistic,
   Sidebar,
+  UserRounded,
 } from "@solar-icons/react";
 import { useDisclosure } from "@mantine/hooks";
 import SidebarLink from "@/components/sidebar/SidebarLink";
@@ -26,7 +27,7 @@ import { authClient } from "@/lib/auth-client";
 import { Link } from "react-router";
 import UserAvatar from "@/components/user/UserAvatar";
 import AppBreadcrumbs from "@/components/app/AppBreadcrumbs";
-import { ArrowLeft, DoorClosed, LogOut, Settings, User } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import AppTooltip from "@/components/app/AppTooltip";
 
 interface AppLayoutProps {
@@ -190,10 +191,26 @@ const AppLayout = ({ children, customLastCrumb, backPage }: AppLayoutProps) => {
                     </Menu.Target>
                     <Menu.Dropdown>
                       <Menu.Label>{user.data?.user.name}</Menu.Label>
-                      <Menu.Item leftSection={<User size={16} />}>
+                      <Menu.Item
+                        leftSection={
+                          <UserRounded
+                            weight="BoldDuotone"
+                            color="#495057"
+                            size={22}
+                          />
+                        }
+                      >
                         Your Profile
                       </Menu.Item>
-                      <Menu.Item leftSection={<Settings size={16} />}>
+                      <Menu.Item
+                        leftSection={
+                          <Settings
+                            weight="BoldDuotone"
+                            color="#495057"
+                            size={22}
+                          />
+                        }
+                      >
                         Settings
                       </Menu.Item>
                       <Menu.Divider />
